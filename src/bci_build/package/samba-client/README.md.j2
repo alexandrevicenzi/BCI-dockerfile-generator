@@ -1,0 +1,17 @@
+# {{ image.pretty_name }} Container Image
+
+{% include 'badges.j2' %}
+
+## Description
+
+{{ image.custom_description }}
+
+## Usage
+
+To connect to a SMB file server, run the following command:
+
+```ShellSession
+$ podman run -it --rm {{ image.pretty_reference }} smbclient //SERVER/SHARE -U "DOMAIN\\username"
+```
+
+{% include 'licensing_and_eula.j2' %}
