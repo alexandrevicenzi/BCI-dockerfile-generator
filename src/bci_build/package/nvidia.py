@@ -11,6 +11,7 @@ from jinja2 import Template
 from bci_build.container_attributes import Arch
 from bci_build.container_attributes import BuildType
 from bci_build.container_attributes import PackageType
+from bci_build.container_attributes import ReleaseStage
 from bci_build.container_attributes import SupportLevel
 from bci_build.containercrate import ContainerCrate
 from bci_build.os_version import OsVersion
@@ -185,6 +186,11 @@ class NvidiaDriverBCI(ThirdPartyRepoMixin, OsContainer):
                 "_constraints": generate_disk_size_constraints(8),
             }
         )
+
+    @property
+    def release_stage(self) -> ReleaseStage:
+        # TODO: Remove once the image is completed with all driver versions
+        return ReleaseStage.BETA
 
     @property
     def uid(self) -> str:
