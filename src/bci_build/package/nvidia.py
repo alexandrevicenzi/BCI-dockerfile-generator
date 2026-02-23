@@ -12,6 +12,7 @@ from bci_build.container_attributes import Arch
 from bci_build.container_attributes import BuildType
 from bci_build.container_attributes import PackageType
 from bci_build.container_attributes import SupportLevel
+from bci_build.containercrate import ContainerCrate
 from bci_build.os_version import OsVersion
 from bci_build.package import DOCKERFILE_RUN
 from bci_build.package import _RELEASE_PLACEHOLDER
@@ -130,7 +131,7 @@ COPY nvidia-driver-selector.sh /usr/local/bin/
 COPY NGC-DL-CONTAINER-LICENSE /licenses
 
 {DOCKERFILE_RUN} mkdir /drivers
-COPY README.md /drivers
+COPY vGPU-README.md /drivers/README.md
 
 WORKDIR /drivers
 
@@ -175,7 +176,7 @@ class NvidiaDriverBCI(ThirdPartyRepoMixin, OsContainer):
                 "NGC-DL-CONTAINER-LICENSE": (
                     nvidia_dir / "NGC-DL-CONTAINER-LICENSE"
                 ).read_bytes(),
-                "README.md": (nvidia_dir / "vGPU-README.md").read_bytes(),
+                "vGPU-README.md": (nvidia_dir / "vGPU-README.md").read_bytes(),
                 "extract-vmlinux": (nvidia_dir / "extract-vmlinux").read_bytes(),
                 "nvidia-driver": (nvidia_dir / "nvidia-driver").read_bytes(),
                 "nvidia-driver-selector.sh": (
@@ -322,13 +323,13 @@ for os_version in (OsVersion.SP7,):
             NvidiaDriverBCI(
                 os_version=os_version,
                 driver_version=ver,
+                build_flavor=f"driver-{ver}",
                 name="nvidia-driver",
                 pretty_name="NVIDIA Driver",
                 license="NVIDIA DEEP LEARNING CONTAINER LICENSE",
                 is_latest=False,
                 from_image=generate_from_image_tag(os_version, "bci-base"),
                 from_target_image=generate_from_image_tag(os_version, "bci-micro"),
-                package_name=f"nvidia-driver-{ver}-image",
                 package_list=[
                     # needed by kernel packages
                     Package("dwarves", PackageType.BOOTSTRAP),
@@ -410,3 +411,6 @@ for os_version in (OsVersion.SP7,):
                 },
             )
         )
+
+
+NVIDIA_CRATE = ContainerCrate(NVIDIA_CONTAINERS)
